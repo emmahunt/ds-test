@@ -1,0 +1,80 @@
+version: 2
+
+models:
+  - name: stg_horses
+    description: "Staging model to ingest the raw horses data"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - race_id
+            - horse_id
+    columns:
+      - name: race_id
+        description: Unique identifier for a race - 6 or 7 digit integer
+        tests:
+          - not_null
+      - name: horse_id
+        description: Unique identifier for a horse, 7 digit long integer.
+        tests:
+          - not_null
+      - name: cloth
+        description: Integer representing the 'Cloth Number' - the number that will be displayed on a horse's saddle cloth during the race. Cloth numbers are not specific to horses between different races, but are unique per horse, per stall within one race.
+        tests:
+          - not_null
+      - name: stall
+        description: An integer representing the number of stalls used in the horse race - minimum of 1 and maximum of 30. The value can be null, presumably in races where stalls are not used.
+      - name: weight_value
+        description: An integer with a min of 101 and max of 148. It's not clear what the units are (presumably pounds), nor if this is the weight of the jockey, the weight of the horse (seems unlikely), the combined weight of the jockey and equipment, or the weight of the handicap. The latter seems unlikely too, given the minimum and maximum values are oustide of typical horse racing boundaries for hanidcap values. The same combination of jockey and horse can have many different weights across different races, however since both the weight of the jockey and horse could change with time, this doesn't help isolate which weight this column is referring to.
+        tests: 
+          - not_null
+      - name: jockey_id
+        description: A 7 digit integer which uniquely identifies a jockey. There is one record with a null jockeyid, which is presumably a data error
+      - name: trainer_id
+        description:  A 7 digit integer which uniquely identifies the trainer.
+        tests:
+          - not_null
+      - name: last_run_days_flat
+        description: An integer representing the number of days since the horse last ran on a flat course, used to calculate betting odds.
+      - name: age
+        description: Given the range of the column is between 2 and 10, presuming this is the age of the horse.
+      - name: cheek_pieces
+        description: This column is all null / never populated. Presumably, it indicates if the horse was wearing cheekpieces in the race, or which type of cheekpiece. Cheekpieces are a form of headgear that horses are allowed to wear for horse racing. Cheekpieces partially obscure the vision of the horse, which helps eliminate distractions and focus the horse.
+        tests:
+      - name: forecast_price
+        description: A column used to store the forecasted price of a bet on this horse in the given race. There are a number of anomalous records in this column, including prices in the format of a day and month, e.g. '20-Jan', and some values that seem to be a true indication of the betting odds as a fraction, e.g. '33/1'. There are many values of -1, which may mean there is no forecast for this horse.
+      - name: stat_course
+        description: Mostly null - there are many different values for a statcourse for the same raceid, so it is not a 1-1 relationship between the statcourse and the race.
+      - name: stat_distance
+        description: Mostly null - there are many different values for a statcourse for the same raceid, so it is not a 1-1 relationship between the statcourse and the race.
+      - name: starting_price
+        description: Similarly to forecast price, this column contains data in a mix of formats - null, DD-MM and fractional odds.
+      - name: gender
+        description: The sex of the horse.
+      - name: colour
+        description: The colour of the horse - colour definitions taken from here https://petkeen.com/most-common-horse-colors/. There are some examples of horse colours than have been assumed, e.g. "b/b" as black and "bl/" as black
+      - name: year_born
+        description: The year the horse was born - values range from 2007 to 2014 (with no records at all for 2013). The majority of values in this column are null
+        tests:
+      - name: meeting_id
+        description: Unique identifier for a horse race meeting, which is defined as an occasion when a series of horse races are held at the same place, often during a period of several days.
+        tests:
+          - not_null
+      - name: scheduledtime
+        description: For this data, every row in this column just contains bad data, the value "##########"
+      - name: horse_count
+        description: A column containing integers from 5-20, and 0 and 30.
+      - name: weather
+        description: A column containing descriptions of the weather on the day of the horse race. In this staging model, they've been reformatted as a comma separated list, so that in future they can be transformed into a list and searchable independently (when more than 1 description is used to describe the weather on a certain day). This column can have null values
+      - name: course_distance
+        description: The distance of the horse race course in meters.
+        tests:
+          - not_null
+      - name: meeting_date
+        description: The date of the meeting. The raw data (string in the format DD/MM/YYYY) has been cast as a date in the format YYYY-MM-DD. The range of values in this column is from 2017-05-02 to 2018-02-07
+        tests:
+          - not_null
+      - name: won
+        description: A boolean in the format of a 1 or 0 indicated if the horse won or not in this specific race.
+        tests:
+          - not_null
+      
