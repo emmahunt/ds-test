@@ -69,6 +69,6 @@ select
 
     -- A try cast is not used here, as a "loud" failure in the cast will alert that there is new data in an unexpected format
     , to_date(meetingdate, 'DD/MM/YYYY') as meeting_date
-    , won
+    , cast(won as boolean) as won
 from {{ ref('horses') }}
 

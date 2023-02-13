@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: dim_horse
+    description: "A dimension model to capture data about the horses that appear in the horses dataset"
+    columns:
+      - name: horse_id
+        description: Unique identifier for a horse
+        tests:
+          - unique
+          - not_null
