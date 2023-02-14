@@ -41,13 +41,13 @@ models:
         description: This column is all null / never populated. Presumably, it indicates if the horse was wearing cheekpieces in the race, or which type of cheekpiece. Cheekpieces are a form of headgear that horses are allowed to wear for horse racing. Cheekpieces partially obscure the vision of the horse, which helps eliminate distractions and focus the horse.
         tests:
       - name: forecast_price
-        description: A column used to store the forecasted price of a bet on this horse in the given race. There are a number of anomalous records in this column, including prices in the format of a day and month, e.g. '20-Jan', and some values that seem to be a true indication of the betting odds as a fraction, e.g. '33/1'. There are many values of -1, which may mean there is no forecast for this horse.
+        description: A column used to store the forecasted price of a bet on this horse in the given race. Presumably due to the data being stored in a .csv, several values in this column have been erroneously converted to a date format, e.g. 30-Jan. The staging model converts these into a fraction representing the odds on this horse, e.g. 30/1 instead. There are many values of -1, which may mean there is no forecast for this horse.
       - name: stat_course
         description: Mostly null - there are many different values for a statcourse for the same raceid, so it is not a 1-1 relationship between the statcourse and the race.
       - name: stat_distance
         description: Mostly null - there are many different values for a statcourse for the same raceid, so it is not a 1-1 relationship between the statcourse and the race.
       - name: starting_price
-        description: Similarly to forecast price, this column contains data in a mix of formats - null, DD-MM and fractional odds.
+        description: Similarly to forecast price, this column contains data in a mix of formats - null, DD-MM and fractional odds. Where applicable, these are transformed into a format representing the starting odds on the horse for this race.
       - name: gender
         description: The sex of the horse.
       - name: colour
@@ -65,7 +65,7 @@ models:
         description: A column containing integers from 5-20, and 0 and 30.
       - name: weather
         description: A column containing descriptions of the weather on the day of the horse race. In this staging model, they've been reformatted as a comma separated list, so that in future they can be transformed into a list and searchable independently (when more than 1 description is used to describe the weather on a certain day). This column can have null values
-      - name: course_distance
+      - name: course_distance_metres
         description: The distance of the horse race course in meters.
         tests:
           - not_null

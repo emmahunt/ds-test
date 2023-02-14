@@ -1,3 +1,30 @@
+with horses as (
+    
+    -- Clean up the forecast price and starting price columns, which excel erroneously converts to dates
+    select 
+        *
+    , case
+        when contains(forecastprice, '-') 
+            then concat(
+                get(split(forecastprice, '-'), 0)
+                , '/'
+                , month(try_to_date(forecastprice, 'dd-mon'))
+            )
+        else forecastprice
+    end as forecast_price_fraction
+    , case
+        when contains(startingprice, '-') 
+            then concat(
+                get(split(startingprice, '-'), 0)
+                , '/'
+                , month(try_to_date(startingprice, 'dd-mon'))
+            )
+        else startingprice
+    end as starting_price_fraction
+
+    from {{ ref('horses') }}
+)
+
 select
     raceid  as race_id
     , horseid as horse_id
@@ -9,25 +36,16 @@ select
     , lastrundaysflat as last_run_days_flat
     , age
     , cheekpieces as cheek_pieces
-    , case
-        when contains(forecastprice, '/') then forecastprice
-        else null
-    end as forecast_price_fraction
+    , forecast_price_fraction
     
     -- Format the forecast price as a percentage by calculating it from the fractional odds
-    , case
-        when contains(forecastprice, '/') then 100 / (forecastprice + 1) * 100
-        else null
-    end as forecast_price_percentage
-    , try_to_date(forecastprice, 'dd-mon') as forecast_date
+    , get(split(forecast_price_fraction, '/'), 0) / get(split(forecast_price_fraction, '/'), 1) as forecast_price_decimal
     , statcourse as stat_course
     , statdistance as stat_distance
+
+    , starting_price_fraction
     -- Format the starting price as a percentage by calculating it from the fractional odds
-    , case
-        when contains(startingprice, '/') then 100 / (startingprice + 1) * 100
-        else null
-    end as starting_price_percentage
-    , try_to_date(startingprice, 'dd-mon') as starting_date
+    , get(split(starting_price_fraction, '/'), 0) / get(split(starting_price_fraction, '/'), 1) as starting_price_percentage
     
     -- Reformat the horse gender as in line with definitions found here
     -- https://www.equineworld.co.uk/about-horses/horse-gender-definitions
@@ -65,10 +83,10 @@ select
         when weather = 'Fine but Cloudy' then 'Fine,Cloudy' 
         else replace(weather, ' & ', ',')
     end as weather
-    , course_distance
+    , course_distance as course_distance_metres
 
     -- A try cast is not used here, as a "loud" failure in the cast will alert that there is new data in an unexpected format
     , to_date(meetingdate, 'DD/MM/YYYY') as meeting_date
     , cast(won as boolean) as won
-from {{ ref('horses') }}
+from horses
 
