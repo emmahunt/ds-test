@@ -9,3 +9,14 @@ models:
         tests:
           - unique
           - not_null
+  
+  - name: dim_race
+    description: "A dimension model to capture data about the races that appear in the horses dataset. There is one row in this dataset per race."
+    columns:
+      - name: race_id
+        description: Unique identifier for a race
+        tests:
+          - unique
+          - not_null
+      - name: meeting_date
+        description: The date for the race, which is unique to the race_id
