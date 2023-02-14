@@ -3,11 +3,15 @@ version: 2
 models:
   - name: dim_horse
     description: "A dimension model to capture data about the horses that appear in the horses dataset"
+    tests:  
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - horse_id
+            - valid_from
     columns:
       - name: horse_id
         description: Unique identifier for a horse
         tests:
-          - unique
           - not_null
   
   - name: dim_race
