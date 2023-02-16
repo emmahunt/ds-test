@@ -45,7 +45,7 @@ select
 
     , starting_price_fraction
     -- Format the starting price as a percentage by calculating it from the fractional odds
-    , get(split(starting_price_fraction, '/'), 0) / get(split(starting_price_fraction, '/'), 1) as starting_price_percentage
+    , get(split(starting_price_fraction, '/'), 0) / get(split(starting_price_fraction, '/'), 1) as starting_price_decimal
     
     -- Reformat the horse gender as in line with definitions found here
     -- https://www.equineworld.co.uk/about-horses/horse-gender-definitions
