@@ -12,12 +12,6 @@ select
     , stat_distance
     , starting_price_fraction
     , starting_price_decimal
-    , horse_count
-    , meeting_id
-    , weather
-    , course_distance_metres
-    , meeting_date
-    , won
     , jockey_id
     , trainer_id
 from {{ ref('stg_horses') }}
