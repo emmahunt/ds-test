@@ -10,7 +10,7 @@ pages:
     DBT_PROFILES_DIR: "${CI_PROJECT_DIR}"
 
   script:
-    - pip install dbt
+    - pip install dbt-snowflake
     - dbt deps
     - dbt docs generate
 
