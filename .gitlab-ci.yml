@@ -2,12 +2,12 @@ pages:
   stage: deploy
   needs: []  # GitLab will generate/deploy dbt docs regardless of other steps in the pipeline.
   only:
-    - master
+    - main
 
   image: python:3.7
 
   variables:
-    DBT_PROFILES_DIR: "${CI_PROJECT_DIR}"
+    DBT_PROFILES_DIR: profiles.yml
 
   script:
     - pip install dbt
@@ -16,4 +16,4 @@ pages:
 
   artifacts:
     paths:
-      - public
+      - target
