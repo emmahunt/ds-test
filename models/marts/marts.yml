@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: dim_horse
+    description: "A dimension model to capture data about the horses that appear in the horses dataset"
+    tests:  
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - horse_id
+            - valid_from
+    columns:
+      - name: horse_id
+        description: Unique identifier for a horse
+        tests:
+          - not_null
+  
+  - name: dim_race
+    description: "A dimension model to capture data about the races that appear in the horses dataset. There is one row in this dataset per race."
+    columns:
+      - name: race_id
+        description: Unique identifier for a race
+        tests:
+          - unique
+          - not_null
+      - name: meeting_date
+        description: The date for the race, which is unique to the race_id
+  
+  - name: fact_race_result
+    description: "A fact table to caputre information about each entrant in a race."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - race_id
+            - horse_id
+    columns:
+      - name: race_id
+        description: Unique identifier for a race
+      - name: horse_id
+        description: Unique identifier for a horse
