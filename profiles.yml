@@ -1,0 +1,12 @@
+default:
+  outputs:
+    default:
+      type: snowflake
+      user: "{{ env_var('DBT_USER') }}"
+      password: "{{ env_var('DBT_PASSWORD') }}"
+      account: "{{ env_var('DBT_HOST') }}"
+      database: starling_ds_test
+      role: useradmin
+      schema: dev
+      threads: 8
+      warehouse: COMPUTE_WH
