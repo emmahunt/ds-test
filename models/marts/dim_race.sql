@@ -22,7 +22,7 @@ with stg_horses as (select * from {{ ref('stg_horses') }})
     from stg_horses
     left join winners
         on stg_horses.race_id = winners.race_id
-    group by 1, 2, 3, 4, 5
+    group by 1, 2, 3, 4, 5, 6
 )
 
 select * from final
