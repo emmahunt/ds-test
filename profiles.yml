@@ -1,6 +1,6 @@
-default:
+starling_ds_test:
   outputs:
-    default:
+    dev:
       type: snowflake
       user: "{{ env_var('DBT_USER') }}"
       password: "{{ env_var('DBT_PASSWORD') }}"
