@@ -4,22 +4,33 @@ with horses as (
     select 
         *
     , case
-        when contains(forecastprice, '-') 
+        when contains(forecastprice, '-') and try_to_date(forecastprice, 'dd-mon') is not null
             then concat(
                 get(split(forecastprice, '-'), 0)
                 , '/'
                 , month(try_to_date(forecastprice, 'dd-mon'))
             )
+        when contains(forecastprice, '-') and try_to_date(forecastprice, 'mon-dd') is not null
+            then concat(
+                month(try_to_date(forecastprice, 'mon-day'))
+                , '/'
+                , get(split(forecastprice, '-'), 1)
+            )
         else forecastprice
     end as forecast_price_fraction
     , case
-        when contains(startingprice, '-') 
+        when contains(startingprice, '-') and try_to_date(startingprice, 'dd-mon') is not null
             then concat(
                 get(split(startingprice, '-'), 0)
                 , '/'
                 , month(try_to_date(startingprice, 'dd-mon'))
             )
-        else startingprice
+        when contains(startingprice, '-') and try_to_date(startingprice, 'mon-dd') is not null
+            then concat(
+                month(try_to_date(startingprice, 'mon-day'))
+                , '/'
+                , get(split(startingprice, '-'), 1)
+            )
     end as starting_price_fraction
 
     from {{ ref('horses') }}
